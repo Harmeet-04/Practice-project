@@ -6,7 +6,10 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>this is a sample heading</h1>
-    {{username}}
+    <ul class="people_list">
+        {{#each people}}
+            {{username}} {{age}}
+        {{/each}}
+    </ul>
 </body>
 </html>
