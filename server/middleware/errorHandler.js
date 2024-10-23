@@ -23,9 +23,9 @@ const errorHandler = (err, req, res, next) => {
             message: err.message,
             stackTrace: err.stack,
         });
-        default: 
-        console.log("No error, All Good!");
-        break;
+        default:
+            console.log("No error, All Good!");
+            break;
     }
 };
 module.exports = errorHandler;

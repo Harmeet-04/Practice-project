@@ -9,5 +9,4 @@ const connectDb = async () => {
         process.exit(1);  // Terminate the process immediataly : 0-pass, 1-fail        
     }
 };
-
 module.exports = connectDb;
