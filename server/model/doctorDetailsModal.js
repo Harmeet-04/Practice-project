@@ -1,27 +1,28 @@
 const mongoose = require("mongoose");
-const userSchema = mongoose.Schema({
-    DoctorName:{
-        type : String , 
-        require : [ true , "please add your name"],
+
+const doctorDetailsSchema = mongoose.Schema({
+    name: {
+        type: String,
+        required: [true, "Please add the doctor's name"]
     },
-    Speciality:{
-        type : String , 
-        require : [ true , "please add your Speciality"],
+    speciality: {
+        type: String,
+        required: [true, "Please add the doctor's speciality"]
     },
-    phoneNumber:{
-        type : Number , 
-        require : [ true , "please add your phone number"],
+    phoneNumber: {
+        type: Number,
+        required: [true, "Please add the doctor's phone number"]
     },
-    experience:{
-        type : String,
-        require : [ true , "please add your experience"],
+    experience: {
+        type: Number,
+        required: [true, "Please add the doctor's experience in years"]
     },
-    address:{
-        type : String,
-        require : [ true , "please add your address"],
+    address: {
+        type: String,
+        required: [true, "Please add the doctor's address"]
     }
-},
-{
-    timestamps : true ,
+}, {
+    timestamps: true,
 });
-module.exports = mongoose.model("User" , userSchema);
+
+module.exports = mongoose.model("DoctorDetails", doctorDetailsSchema);

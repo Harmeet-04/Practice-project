@@ -1,8 +1,9 @@
+// doctorsDetails.js
 const express = require("express");
+const { registerDoctor } = require("../controllers/doctorDetailsController");
+
 const router = express.Router();
-const {
-    registerDoctorUser
-    // loginDoctorUser
-}=require("../controllers/userController");
-router.post("/" , registerDoctorUser);
-module.exports=router;
+
+router.post("/register", registerDoctor);
+
+module.exports = router;

@@ -52,6 +52,7 @@ app.get("/alluser", (req, res) => {
 });
 
 app.use("/api/register" , require("./routes/userRoutes"));
+app.use("/api/doctor" , require("./routes/doctorDetails"));
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);
 });
