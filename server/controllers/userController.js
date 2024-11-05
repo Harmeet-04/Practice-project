@@ -19,7 +19,6 @@ const registerUser = asyncHandler(async (req, res) => {
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-
     const newUser = await User.create({
         firstName,
         lastName,
@@ -30,8 +29,7 @@ const registerUser = asyncHandler(async (req, res) => {
         phoneNumber,
         password: hashedPassword,
     });
-
-    res.status(201).json({ message: "User registered successfully", user: newUser });
+    res.status(201).json({ message: "User Registered Successfully", user: newUser });
 });
 
 const loginUser = asyncHandler(async (req, res) => {
@@ -42,17 +40,16 @@ const loginUser = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error("Invalid email or password");
     }
+
     
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
         res.status(401);
         throw new Error("Invalid email or password");
     }
-    
+
     // Generate a dynamic token
     const token = crypto.randomBytes(16).toString("hex");
-    
     res.status(200).json({ message: "Login successful", token });
 });
-
 module.exports = { registerUser, loginUser };
