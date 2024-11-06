@@ -1,50 +1,42 @@
-const express = require('express');
+const express = require("express");
 const connectDb = require("./config/dbConnection");
 const errorHandler = require("./middleware/errorHandler");
 const cors = require("cors");
-const path = require("path");
 const hbs = require("hbs");
-const multer = require("multer");
-// const mongoose = require("mongoose");
-// const upload = multer({ dest: 'uploads/' });
+const path = require("path");
+const multer = require('multer');
+const { GridFsStorage } = require("multer-gridfs-storage");
+// const upload = multer({ dest : 'uploads/'})
+const mongoose = require("mongoose");
+const doctorsDetails = require("./routes/doctorDetails");
+const Profie = require("./model/Profie")
+const app = express();
+app.use(express.static("public"));
 
-
-// env file config
-const dotenv = require("dotenv");
-dotenv.config();
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 const users = [
-    { name: "asdfghj", age: 20 },
-    { name: "fgh", age: 19 },
-    { name: "fgh", age: 20 },
+    { name: "fsadsh", age: 20 },
+    { name: "fasd", age: 19 },
+    { name: "gsh", age: 20 },
 ];
 
+const port = 3000 || 5000;
+const dotenv = require("dotenv");
+dotenv.config();
 connectDb();
-const app = express();
-const port = 2999 || 3000 || 3001;
-
-// hbs - view engine
+app.use(express.json());
+app.use(cors());
+app.get('/', (req, res) => {
+    res.send("working");
+})
 app.set('view engine', 'hbs');
-
 app.set('views', path.join(__dirname, 'views'));
 
 hbs.registerPartials(path.join(__dirname, 'views/partials'));
-
 app.get("/home", (req, res) => {
     res.render("home", {
-    })
-})
-
-app.use(express.json());
-app.use(cors());
-app.use(errorHandler);
-app.get('/', (req, res) => {
-    res.send("working");
-});
-
-app.get("/home", (req, res) => {
-    res.render("home", {
-        username: " Harman Dhiman",
+        username: " Upload your files here",
         posts: " time pass"
     })
 })
@@ -53,30 +45,61 @@ app.get("/alluser", (req, res) => {
         users: users,
     });
 });
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, "./uploads"); // Directory to save files
+//     },
+//     filename: (req, file, cb) => {
+//         const uniqueSuffex = Date.now() + "-" + Math.round(Math.random()*1E9);
+//         cb(null, file.filename +'-'+uniqueSuffex); 
+//     },
+// });
 
-// Disk storage
+// Set up GridFsStorage for file storage in MongoDB
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, './uploads');
+        cb(null, './uploads')
     },
     filename: function (req, file, cb) {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, file.fieldname + '-' + uniqueSuffix);
+        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
+        cb(null, file.fieldname + '-' + uniqueSuffix)
     }
-});
+})
 
-// Uploading
-const upload = multer({storage:storage});
-
-// Multer file uplaoding
-app.post('/profile', upload.single('avatar'), function (req, res, next) {
+//   const upload = multer({ storage: storage })
+const upload = multer({ storage: storage });
+app.post("/profile", upload.single("avatar"), async function (req, res, next) {
     console.log(req.body);
     console.log(req.file);
-    return res.redirect("/home");
+    let { title } = req.body;
+    let { path } = req.file;
+    // let newProfie= new Profie({image:req.file.path});
+    // await newProfie.save()
+    // res.render("profile",{image:req.file.path})
+    // const imagePath = "/uploads/" + req.file.filename.replace(/\\/g, "/");
+    let newProfie = new Profie({ title: title, image: path });
+    await newProfie.save();
+    res.render("profile", { image: path });
 });
+app.get("/profile", async (req, res) => {
+    let allblog = await Profie.find()[0];
+    res.render("profile", { profile: allblog })
+})
+// app.get("/profile", async (req, res) => {
+//     let profile = await Profie.findOne();
 
+//     if (profile) {
+//         console.log("Image URL:", profile.image);  // Log the image path
+//         res.render("profile", { image: profile.image });
+//     } else {
+//         console.log("No profile found.");
+//         res.render("profile", { image: null });
+//     }
+// });
+
+//register route
 app.use("/api/register", require("./routes/userRoutes"));
-app.use("/api/doctor", require("./routes/doctorDetails"));
+app.use("/api/doctors", doctorsDetails);
 app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+    console.log(`server running on http://localhost:${port}`);
+})
