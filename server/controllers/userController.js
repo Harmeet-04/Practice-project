@@ -2,6 +2,8 @@ const asyncHandler = require("express-async-handler");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const User = require("../model/userModel");
+const { generateToken } = require("../middleware/jstMiddleware");
+
 require("dotenv").config();
 
 const registerUser = asyncHandler(async (req, res) => {
@@ -40,7 +42,6 @@ const loginUser = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error("Invalid email or password");
     }
-
     
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
@@ -48,8 +49,9 @@ const loginUser = asyncHandler(async (req, res) => {
         throw new Error("Invalid email or password");
     }
 
-    // Generate a dynamic token
-    const token = crypto.randomBytes(16).toString("hex");
+    const token = generateToken({ id: user._id, email: user.email });
     res.status(200).json({ message: "Login successful", token });
+
+    // res.status(200).json({ message: "Login successful" });
 });
 module.exports = { registerUser, loginUser };

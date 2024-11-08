@@ -45,17 +45,7 @@ app.get("/alluser", (req, res) => {
         users: users,
     });
 });
-// const storage = multer.diskStorage({
-//     destination: (req, file, cb) => {
-//         cb(null, "./uploads"); // Directory to save files
-//     },
-//     filename: (req, file, cb) => {
-//         const uniqueSuffex = Date.now() + "-" + Math.round(Math.random()*1E9);
-//         cb(null, file.filename +'-'+uniqueSuffex); 
-//     },
-// });
 
-// Set up GridFsStorage for file storage in MongoDB
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         cb(null, './uploads')
@@ -73,29 +63,14 @@ app.post("/profile", upload.single("avatar"), async function (req, res, next) {
     console.log(req.file);
     let { title } = req.body;
     let { path } = req.file;
-    // let newProfie= new Profie({image:req.file.path});
-    // await newProfie.save()
-    // res.render("profile",{image:req.file.path})
-    // const imagePath = "/uploads/" + req.file.filename.replace(/\\/g, "/");
     let newProfie = new Profie({ title: title, image: path });
     await newProfie.save();
     res.render("profile", { image: path });
 });
 app.get("/profile", async (req, res) => {
-    let allblog = await Profie.find()[0];
+    let allblog = await Profie.find();
     res.render("profile", { profile: allblog })
 })
-// app.get("/profile", async (req, res) => {
-//     let profile = await Profie.findOne();
-
-//     if (profile) {
-//         console.log("Image URL:", profile.image);  // Log the image path
-//         res.render("profile", { image: profile.image });
-//     } else {
-//         console.log("No profile found.");
-//         res.render("profile", { image: null });
-//     }
-// });
 
 //register route
 app.use("/api/register", require("./routes/userRoutes"));

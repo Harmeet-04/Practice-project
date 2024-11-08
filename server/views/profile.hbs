@@ -6,12 +6,9 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>User Profile</h1>
-{{#if image}}
-    <img src="{{image}}" alt="User Avatar" style="width: 200px; height: auto;">
-{{else}}
-    <p>No profile image available.</p>
-{{/if}}
-
+    {{#each profile as |b|}}
+    <h4>{{b.title}}</h4>
+    <img src=" {{b.image}}" alt="Error loading image">
+    {{/each}}
 </body>
 </html>
