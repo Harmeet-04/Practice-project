@@ -70,7 +70,8 @@ app.post("/profile", upload.single("avatar"), async function (req, res, next) {
 app.get("/profile", async (req, res) => {
     let allblog = await Profie.find();
     res.render("profile", { profile: allblog })
-})
+});
+app.use("/api/newsletter", require("./routes/newsletterRoutes"));
 
 //register route
 app.use("/api/register", require("./routes/userRoutes"));
