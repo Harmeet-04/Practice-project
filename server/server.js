@@ -76,5 +76,5 @@ app.get("/profile", async (req, res) => {
 app.use("/api/register", require("./routes/userRoutes"));
 app.use("/api/doctors", doctorsDetails);
 app.listen(port, () => {
-    console.log(`server running on http://localhost:${port}`);
+    console.log(`Server running on http://localhost:${port}`);
 })

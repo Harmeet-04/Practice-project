@@ -42,7 +42,7 @@ const loginUser = asyncHandler(async (req, res) => {
         res.status(401);
         throw new Error("Invalid email or password");
     }
-    
+
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
         res.status(401);
@@ -50,8 +50,17 @@ const loginUser = asyncHandler(async (req, res) => {
     }
 
     const token = generateToken({ id: user._id, email: user.email });
-    res.status(200).json({ message: "Login successful", token });
-
-    // res.status(200).json({ message: "Login successful" });
+    res.status(200).json({ message: "Login successful", token })
 });
-module.exports = { registerUser, loginUser };
+
+const mydetails = async (req, res) => {
+    const id = req.user.id;
+    const userExists = await User.findById(id);
+    if (userExists) {
+        res.send({ userExists });
+    } else {
+        res.status(404).json({ message: "User not found" });
+    }
+};
+
+module.exports = { registerUser, loginUser, mydetails };

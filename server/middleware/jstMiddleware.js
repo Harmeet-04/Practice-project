@@ -6,7 +6,7 @@ const generateToken = (userData) => {
     return jwt.sign(userData, process.env.PRIVATE_KEY);
 }
 
-const validateToken = (res, req, next) => {
+const validateToken = (req, res, next) => {
     // Checks if token is available or not
     const authorization = req.headers.authorization;
     if (!authorization) {
